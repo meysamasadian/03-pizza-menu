@@ -65,32 +65,44 @@ function Header() {
   );
 }
 
-function Pizza(props) {
-  const { name, ingredients, photoName, price } = props;
-
-  return (
-    <div className="pizza">
-      <img src={photoName} alt={name} />
-      <div>
-        <h3>{name}</h3>
-        <p>{ingredients}</p>
-        <span>{price}</span>
-      </div>
-    </div>
-  );
-}
-
 function Menu() {
+  const pizzas = pizzaData;
+  const numPizzas = pizzas.length;
+
   return (
     <main className="menu">
       <h2>Our Menu:</h2>
-      <Pizza
-        name="Pizza Spinaci"
-        ingredients="A1, A2, B3"
-        photoName="pizzas/spinaci.jpg"
-        price={20}
-      />
+
+      {numPizzas > 0 ? (
+        <>
+          <p>
+            Authentic Italian cuisine. 6 creative dishes to choose from. All
+            freom our stone oven, all organic, all delicious.
+          </p>
+
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizza={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're still working on our menu. Please come back later :)</p>
+      )}
     </main>
+  );
+}
+
+function Pizza({ pizza }) {
+  return (
+    <li className={`pizza${pizza.soldOut ? " sold-out" : ""}`}>
+      <img src={pizza.photoName} alt={pizza.name} />
+      <div>
+        <h3>{pizza.name}</h3>
+        <p>{pizza.ingredients}</p>
+        <span>{!pizza.soldOut ? pizza.price : "SOLD OUT"}</span>
+      </div>
+    </li>
   );
 }
 
@@ -102,8 +114,23 @@ function Footer() {
 
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()}. We're currently open
+      {isOpen ? (
+        <Order closeHour={closeHour} />
+      ) : (
+        <p>
+          W're happy to welcome you between {openHour} until {closeHour}
+        </p>
+      )}
     </footer>
+  );
+}
+
+function Order({ closeHour }) {
+  return (
+    <div className="order">
+      <p>We're open until {closeHour}:00.Come vist us or online.</p>
+      <button className="btn">Order</button>
+    </div>
   );
 }
 
